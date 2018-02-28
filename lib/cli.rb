@@ -9,8 +9,8 @@ USAGE = <<-USAGE
     flash KEYBOARD    Flash a keyboard
     build KEYBOARD    Compile a keyboard
     clean [KEYBOARD]  Cleans up output folders so things compile from scratch
-    setup             Setup QMK firmware to flash keyboards
-    update            Update QMK firmware to latest
+    setup             Clone QMK firmware and checkout latest tag
+    update            Update QMK firmware to latest tag
 
   Options:
 USAGE
