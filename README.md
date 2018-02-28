@@ -37,7 +37,7 @@ View [nicinabox/keymaps](https://github.com/nicinabox/keymaps) for a complete ex
 - [ ] linux
 - [ ] windows
 
-# Requirements
+## Requirements
 
 - Ruby >= 2
 - Git
