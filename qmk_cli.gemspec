@@ -6,7 +6,12 @@ Gem::Specification.new do |s|
   s.description = "A cli wrapper for QMK Firmware"
   s.authors     = ["Nic Haynes"]
   s.email       = 'nic@nicinabox.com'
-  s.files       = ['lib/cli.rb', 'lib/firmware.rb', 'lib/programmer.rb']
+  s.files       = [
+                    'lib/cli.rb',
+                    'lib/firmware.rb',
+                    'lib/programmer.rb',
+                    'lib/git.rb'
+                  ]
   s.homepage    =
     'http://rubygems.org/gems/qmk-cli'
   s.license       = 'MIT'
