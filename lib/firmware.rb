@@ -3,12 +3,14 @@ require 'open3'
 require 'programmer'
 require 'git'
 
+LIB_PATH = "/usr/local/lib/qmk_firmware"
+
 module QMK
   class Firmware
     def initialize(keyboard, keymap)
       @keyboard = keyboard
       @keymap = keymap
-      @repo = Git.new("/usr/local/etc/qmk_firmware")
+      @repo = Git.new(LIB_PATH)
     end
 
     def make(target = nil)
