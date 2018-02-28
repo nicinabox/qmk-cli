@@ -82,7 +82,7 @@ module QMK
     end
 
     def keymaps_only?
-      File.exists? '.keymaps'
+      File.exists? '.qmk'
     end
 
     def handwired?
