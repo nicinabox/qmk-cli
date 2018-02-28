@@ -11,7 +11,7 @@ A thin wrapper around QMK's `make` to make common tasks easier.
 ## Usage
 
     Usage:
-      qmk COMMAND KEYBOARD [options]
+      qmk COMMAND [options]
 
     Commands:
       flash KEYBOARD    Flash a keyboard
@@ -21,7 +21,7 @@ A thin wrapper around QMK's `make` to make common tasks easier.
       update            Update QMK firmware to latest
 
     Options:
-      -k, --keymap KEYMAP              Your keymap name (default: `whoami`)
+      -k, --keymap KEYMAP              Your keymap name (default: nic)
       -h, --help                       Show this help message
 
 ## Standalone keymaps
