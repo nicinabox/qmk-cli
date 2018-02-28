@@ -3,14 +3,14 @@ require 'firmware'
 
 USAGE = <<-USAGE
   Usage:
-    qmk COMMAND KEYBOARD [options]
+    qmk COMMAND [options]
 
   Commands:
+    flash KEYBOARD    Flash a keyboard
+    build KEYBOARD    Compile a keyboard
+    clean [KEYBOARD]  Cleans up output folders so things compile from scratch
     setup             Setup QMK firmware to flash keyboards
     update            Update QMK firmware to latest
-    build KEYBOARD    Compile a keyboard
-    flash KEYBOARD    Flash a keyboard
-    clean [KEYBOARD]  Cleans up output folders so things compile from scratch
 
   Options:
 USAGE
