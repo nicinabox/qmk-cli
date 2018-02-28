@@ -21,8 +21,12 @@ module QMK
       end
     end
 
-    def clone
+    def setup
       @repo.clone 'https://github.com/qmk/qmk_firmware.git'
+
+      in_repo do
+        @repo.checkout_latest_tag
+      end
     end
 
     def update_submodules

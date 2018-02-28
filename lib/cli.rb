@@ -26,7 +26,7 @@ module QMK
     end
 
     def setup
-      @firmware.clone
+      @firmware.setup
     end
 
     def update
