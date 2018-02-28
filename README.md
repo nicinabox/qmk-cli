@@ -17,11 +17,11 @@ A thin wrapper around QMK's `make` to make common tasks easier.
       flash KEYBOARD    Flash a keyboard
       build KEYBOARD    Compile a keyboard
       clean [KEYBOARD]  Cleans up output folders so things compile from scratch
-      setup             Setup QMK firmware to flash keyboards
-      update            Update QMK firmware to latest
+      setup             Clone QMK firmware and checkout latest tag
+      update            Update QMK firmware to latest tag
 
     Options:
-      -k, --keymap KEYMAP              Your keymap name (default: nic)
+      -k, --keymap KEYMAP              Your keymap name (default: `whoami`)
       -h, --help                       Show this help message
 
 ## Standalone keymaps
@@ -34,7 +34,7 @@ View [nicinabox/keymaps](https://github.com/nicinabox/keymaps) for a complete ex
 ## Platforms
 
 - [x] macOS
-- [ ] linux
+- [x] linux, probably
 - [ ] windows
 
 ## Requirements
