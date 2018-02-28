@@ -5,7 +5,7 @@ A thin wrapper around QMK's `make` to make common tasks easier.
 ## Why use this?
 
 - Flashing is more intuitive (Example: `qmk flash planck`)
-- Automatic programmer detection (No more "Does this board use dfu-programmer/ avrdude/teensy/other?")
+- Automatic programmer detection (No more "Does this board use dfu-programmer/avrdude/teensy/other?")
 - Supports standalone keymaps
 
 ## Usage
