@@ -31,9 +31,17 @@ A thin wrapper around QMK's `make` to make common tasks easier.
 
 View [nicinabox/keymaps](https://github.com/nicinabox/keymaps) for a complete example on how standalone keymaps should be organized.
 
-## Gotchas
+## Platforms
 
-- Probably only works on macOS right now
+- [x] macOS
+- [ ] linux
+- [ ] windows
+
+# Requirements
+
+- Ruby >= 2
+- Git
+- [build tools](https://docs.qmk.fm/getting_started_build_tools.html)
 
 ## License
 
