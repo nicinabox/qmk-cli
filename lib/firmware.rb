@@ -1,15 +1,14 @@
 require 'fileutils'
 require 'open3'
 require 'programmer'
-
-INSTALL_ROOT = "/usr/local/etc"
-FIRMWARE_ROOT = "#{INSTALL_ROOT}/qmk_firmware"
+require 'git'
 
 module QMK
   class Firmware
     def initialize(keyboard, keymap)
       @keyboard = keyboard
       @keymap = keymap
+      @repo = Git.new("/usr/local/etc/qmk_firmware")
     end
 
     def make(target = nil)
@@ -17,25 +16,32 @@ module QMK
         prepare_firmware
       end
 
-      Dir.chdir FIRMWARE_ROOT do
+      in_repo do
         run "make #{make_target(target)}"
       end
     end
 
     def clone
-      `mkdir -p #{INSTALL_ROOT}`
-      `git clone https://github.com/qmk/qmk_firmware.git #{FIRMWARE_ROOT}`
+      @repo.clone 'https://github.com/qmk/qmk_firmware.git'
     end
 
     def update_submodules
-      Dir.chdir FIRMWARE_ROOT do
-        `make git-submodule`
+      in_repo do
+        run "make git-submodule"
+      end
+    end
+
+    def checkout_stable
+      in_repo do
+        @repo.fetch_origin
+        @repo.checkout_latest_tag
       end
     end
 
     def update
-      Dir.chdir FIRMWARE_ROOT do
-        `git checkout . && git pull`
+      in_repo do
+        @repo.clean
+        checkout_stable
       end
     end
 
@@ -48,6 +54,10 @@ module QMK
     end
 
     private
+    def in_repo(&block)
+      @repo.in_repo &block
+    end
+
     def run(cmd)
       Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
         while line = stdout.gets
@@ -70,7 +80,7 @@ module QMK
     end
 
     def qmk_keyboard_path
-      "#{FIRMWARE_ROOT}/keyboards/#{keyboard_name}"
+      "#{@repo.path}/keyboards/#{keyboard_name}"
     end
 
     def keymap_path
