@@ -3,7 +3,7 @@ require 'makefile'
 
 class MakefileTest < Minitest::Test
   def setup
-    @make = Makefile.new 'test/rules.mk'
+    @make = Makefile.new 'test/fixtures/atreus/rules.mk'
   end
 
   def test_basic_value

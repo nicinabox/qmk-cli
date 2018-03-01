@@ -6,7 +6,7 @@ class ProgrammerTest < Minitest::Test
     @protected_methods = Programmer.private_instance_methods
     Programmer.send(:public, *@protected_methods)
 
-    @prog = Programmer.new 'test'
+    @prog = Programmer.new 'test/fixtures/atreus'
   end
 
   def test_bootloader
