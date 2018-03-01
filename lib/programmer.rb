@@ -37,13 +37,13 @@ class Programmer
 
   def parse_bootloader_name(filename)
     make = Makefile.new(filename)
-    name = make.value 'BOOTLOADER'
+    name = make.get :bootloader
     return name if name
 
-    size = make.value 'BOOTLOADER_SIZE'
+    size = make.get :bootloader_size
     return bootloader_from_size(size) if size
 
-    opt_defs = make.value 'OPT_DEFS'
+    opt_defs = make.get :opt_defs
     match = opt_defs.match /BOOTLOADER_SIZE=(\w+)/
     return bootloader_from_size(match[1]) if match
   end

@@ -3,12 +3,10 @@ require 'tempfile'
 class Makefile
   def initialize(include_makefile)
     @include_makefile = include_makefile
-    @file = Tempfile.new('makefile')
-
-    write
+    @file = write
   end
 
-  def value(variable)
+  def get(variable)
     output = run variable
     _, value = parse output
     value
@@ -16,12 +14,14 @@ class Makefile
 
   private
   def write
-    @file.write contents
-    @file.close
+    file = Tempfile.new('makefile')
+    file.write contents
+    file.close
+    file
   end
 
   def run(variable)
-    `make -f #{@file.path} -f #{@include_makefile} print-#{variable.upcase}`
+    `make -f #{@file.path} -f #{@include_makefile} print-#{variable.to_s.upcase}`
   end
 
   def parse(output)
