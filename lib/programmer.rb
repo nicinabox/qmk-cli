@@ -1,3 +1,5 @@
+require 'makefile'
+
 FLASHERS = {
   'dfu': ['lufa-dfu', 'qmk-dfu', 'atmel-dfu'],
   'avrdude': ['caterina', 'usbasploader'],
@@ -16,15 +18,13 @@ class Programmer
   end
 
   def bootloader
-    @bootloader ||= begin
-      filename = "#{@keyboard_path}/rules.mk"
-      parse_bootloader_name(filename) if File.exists? filename
-    end
+    filename = "#{@keyboard_path}/rules.mk"
+    parse_bootloader_name(filename) if File.exists? filename
   end
 
   def flasher
     bootloader and FLASHERS.each do |k, v|
-      break k if v.include? bootloader
+      break k if v.include? bootloader.downcase
     end
   end
 
@@ -36,17 +36,15 @@ class Programmer
   end
 
   def parse_bootloader_name(filename)
-    name_patterns = Regexp.union(FLASHERS.values.flatten.map {|b| Regexp.new "(#{b})"})
-    value_patterns = Regexp.union(BOOTLOADERS.values.flatten.map {|size| Regexp.new "#{size}"})
+    make = Makefile.new(filename)
+    name = make.value 'BOOTLOADER'
+    return name if name
 
-    File.open(filename) do |file|
-      file.find do |line|
-        result = line.match(name_patterns)
-        break result[0] if result
+    size = make.value 'BOOTLOADER_SIZE'
+    return bootloader_from_size(size) if size
 
-        result = line.match(/BOOTLOADER_SIZE=(#{value_patterns})/)
-        break bootloader_from_size(result[1]) if result
-      end
-    end
+    opt_defs = make.value 'OPT_DEFS'
+    match = opt_defs.match /BOOTLOADER_SIZE=(\w+)/
+    return bootloader_from_size(match[1]) if match
   end
 end
