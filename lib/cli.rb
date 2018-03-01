@@ -23,7 +23,7 @@ module QMK
       command, keyboard = args
       @firmware = Firmware.new(keyboard, @options[:keymap], keymaps_only?)
 
-      self.send(parse_command(command || 'help'))
+      command and self.send(parse_command(command))
     end
 
     def setup
@@ -51,10 +51,6 @@ module QMK
       puts @firmware.keyboards
     end
 
-    def help
-      puts @options[:help]
-    end
-
     private
     def parser(args)
       options = {}
@@ -68,7 +64,9 @@ module QMK
         end
 
         options[:help] = parser
-        parser.on("-h", "--help", "Show this help message")
+        parser.on("-h", "--help", "Show this help message") do
+          puts parser
+        end
       end.parse!
 
       options
@@ -83,7 +81,7 @@ module QMK
     end
 
     def method_missing(*args)
-      help
+      puts @options[:help]
     end
   end
 end
