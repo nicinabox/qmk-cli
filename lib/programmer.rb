@@ -24,7 +24,7 @@ class Programmer
 
   def flasher
     bootloader and FLASHERS.each do |k, v|
-      break k if v.include? bootloader.downcase
+      break k.to_s if v.include? bootloader.downcase
     end
   end
 
