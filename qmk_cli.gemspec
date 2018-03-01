@@ -7,10 +7,11 @@ Gem::Specification.new do |s|
   s.authors     = ["Nic Haynes"]
   s.email       = 'nic@nicinabox.com'
   s.files       = [
+                    'lib/git.rb',
                     'lib/cli.rb',
-                    'lib/firmware.rb',
+                    'lib/makefile.rb',
                     'lib/programmer.rb',
-                    'lib/git.rb'
+                    'lib/firmware.rb'
                   ]
   s.homepage    =
     'http://rubygems.org/gems/qmk-cli'
