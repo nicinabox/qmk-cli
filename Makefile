@@ -6,6 +6,10 @@ build: clean
 install:
 	@gem install *.gem
 
+.PHONY: uninstall
+uninstall:
+	@gem install qmk-cli
+
 .PHONY: publish
 publish: build
 	@gem push *.gem
