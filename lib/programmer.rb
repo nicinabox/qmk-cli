@@ -31,7 +31,7 @@ class Programmer
   private
   def bootloader_from_size(size)
     size and BOOTLOADERS.each do |k, v|
-      break k.to_s if v.include? size
+      break k.to_s if v.include? size.to_s
     end
   end
 
