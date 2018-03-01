@@ -20,4 +20,4 @@ clean:
 
 .PHONY: test
 test:
-	@ruby test/test_*
+	@ruby -Ilib -e 'ARGV.each { |f| require f }' ./test/test*.rb
