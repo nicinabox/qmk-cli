@@ -8,6 +8,13 @@ class Makefile
     write
   end
 
+  def value(variable)
+    output = run variable
+    _, value = parse output
+    value
+  end
+
+  private
   def write
     @file.write contents
     @file.close
@@ -15,12 +22,6 @@ class Makefile
 
   def run(variable)
     `make -f #{@file.path} -f #{@include_makefile} print-#{variable.upcase}`
-  end
-
-  def value(variable)
-    output = run variable
-    _, value = parse output
-    value
   end
 
   def parse(output)
