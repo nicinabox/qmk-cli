@@ -63,6 +63,11 @@ module QMK
           options[:keymap] = v
         end
 
+        parser.on("-v", "--version", "Show qmk-cli version") do
+          spec = Gem::Specification::load("qmk_cli.gemspec")
+          puts spec.version
+        end
+
         options[:help] = parser
         parser.on("-h", "--help", "Show this help message") do
           puts parser
