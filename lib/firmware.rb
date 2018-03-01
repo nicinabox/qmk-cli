@@ -7,14 +7,15 @@ LIB_PATH = "/usr/local/lib/qmk_firmware"
 
 module QMK
   class Firmware
-    def initialize(keyboard, keymap)
+    def initialize(keyboard, keymap, keymaps_only)
       @keyboard = keyboard
       @keymap = keymap
       @repo = Git.new(LIB_PATH)
+      @keymaps_only = keymaps_only
     end
 
     def make(target = nil)
-      if keymaps_only?
+      if @keymaps_only
         prepare_firmware
       end
 
@@ -51,12 +52,39 @@ module QMK
       end
     end
 
+    def keyboards
+      if @keymaps_only
+        standalone_keyboards
+      else
+        qmk_keyboards @keymap
+      end
+    end
+
+    def standalone_keyboards
+      Dir["**/keymap.c"]
+        .map {|path| File.dirname(path) }
+        .sort
+    end
+
+    def qmk_keyboards(keymap=nil)
+      Dir["#{keyboards_path}/**/#{keymap}/keymap.c"]
+        .map {|path|
+          File.dirname(path)
+            .gsub(keyboards_path, '')
+            .split('/')
+            .reject(&:empty?)
+            .first
+        }
+        .uniq
+        .sort
+    end
+
     def keyboard_name
       @keyboard.gsub(/\/rev.*/, '')
     end
 
     def programmer
-      Programmer.new(qmk_keyboard_path).flasher
+      Programmer.new(keyboard_path).flasher
     end
 
     private
@@ -85,20 +113,20 @@ module QMK
       [@keyboard, @keymap, target].compact.join(':')
     end
 
-    def qmk_keyboard_path
-      "#{@repo.path}/keyboards/#{keyboard_name}"
+    def keyboards_path
+      "#{@repo.path}/keyboards"
+    end
+
+    def keyboard_path
+      "#{keyboards_path}/#{keyboard_name}"
     end
 
     def keymap_path
       if handwired?
-        qmk_keyboard_path
+        keyboard_path
       else
-        "#{qmk_keyboard_path}/keymaps/#{@keymap}"
+        "#{keyboard_path}/keymaps/#{@keymap}"
       end
-    end
-
-    def keymaps_only?
-      File.exists? '.qmk'
     end
 
     def handwired?
