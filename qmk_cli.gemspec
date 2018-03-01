@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.email       = "nic@nicinabox.com"
   s.files       = `git ls-files -z`.split("\x0")
   s.homepage    = "https://github.com/nicinabox/qmk-cli"
-  s.license     = "MIT"
+  s.license     = "ISC"
 
   s.executables << "qmk"
 end
