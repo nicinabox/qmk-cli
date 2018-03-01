@@ -17,3 +17,7 @@ publish: build
 .PHONY: clean
 clean:
 	@rm -f *.gem
+
+.PHONY: test
+test:
+	@ruby test/test_*
