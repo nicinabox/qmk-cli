@@ -1,6 +1,6 @@
 # qmk-cli
 
-A thin wrapper around QMK's `make` to make common tasks easier.
+A thin wrapper around QMK's `make` to make common tasks easier. **This is a proof of concept and should be considered unstable.**
 
 ## Why use this?
 
