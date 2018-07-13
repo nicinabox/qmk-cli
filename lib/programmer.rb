@@ -13,7 +13,8 @@ BOOTLOADERS = {
 }
 
 class Programmer
-  def initialize(keyboard_path)
+  def initialize(keyboard, keyboard_path)
+    @keyboard = keyboard
     @keyboard_path = keyboard_path
   end
 
@@ -36,7 +37,7 @@ class Programmer
   end
 
   def parse_bootloader_name(filename)
-    make = Makefile.new(filename)
+    make = Makefile.new(@keyboard, filename)
     name = make.get :bootloader
     return name if name
 

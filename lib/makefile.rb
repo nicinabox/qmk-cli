@@ -1,7 +1,8 @@
 require 'tempfile'
 
 class Makefile
-  def initialize(include_makefile)
+  def initialize(keyboard, include_makefile)
+    @keyboard = keyboard
     @include_makefile = include_makefile
     @file = write
   end
@@ -21,7 +22,7 @@ class Makefile
   end
 
   def run(variable)
-    `make -f #{@file.path} -f #{@include_makefile} print-#{variable.to_s.upcase}`
+    p `make -f #{@file.path} -f #{LIB_PATH}/Makefile print-#{variable.to_s.upcase} KEYBOARD=#{@keyboard} KEYMAP=default`
   end
 
   def parse(output)
