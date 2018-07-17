@@ -21,7 +21,7 @@ module QMK
     def initialize(args)
       @options = parser(args)
       command, keyboard = args
-      @firmware = Firmware.new(keyboard, @options[:keymap], keymaps_only?)
+      @firmware = Firmware.new(keyboard, @options[:keymap], config)
 
       command and self.send(parse_command(command))
     end
@@ -58,7 +58,7 @@ module QMK
       OptionParser.new do |parser|
         parser.banner = USAGE
 
-        options[:keymap] = keymaps_only? ? `whoami`.strip : nil
+        options[:keymap] = config[:keymap]
         parser.on("-k", "--keymap KEYMAP", "Your keymap name (default: #{options[:keymap]})") do |v|
           options[:keymap] = v
         end
@@ -81,7 +81,27 @@ module QMK
       cmd.gsub(/\-/, '_').downcase
     end
 
-    def keymaps_only?
+    def config
+      defaults = {
+        standalone_keymaps: standalone_keymaps?,
+        keyboards: [],
+        keymaps: [],
+        keymap: `whoami`.strip
+      }
+
+      if standalone_keymaps?
+        c = YAML.load_file('.qmk')
+                .each_with_object({}) do |(k,v), memo|
+                  memo[k.to_sym] = v
+                end
+
+        return defaults.merge c
+      end
+
+      return defaults
+    end
+
+    def standalone_keymaps?
       File.exists? '.qmk'
     end
 
