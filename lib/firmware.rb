@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'open3'
+require 'yaml'
 require 'programmer'
 require 'git'
 
@@ -7,15 +8,18 @@ LIB_PATH = "/usr/local/lib/qmk_firmware"
 
 module QMK
   class Firmware
-    def initialize(keyboard, keymap, keymaps_only)
+    def initialize(keyboard, keymap, config)
+      @config = config
+
       @keyboard = keyboard
-      @keymap = keymap
+      @qmk_keyboard = get_keyboard keyboard
+      @keymap = get_keymap(keyboard) || keymap
+
       @repo = Git.new(LIB_PATH)
-      @keymaps_only = keymaps_only
     end
 
     def make(target = nil)
-      if @keymaps_only
+      if @config[:standalone_keymaps]
         prepare_firmware
       end
 
@@ -53,7 +57,7 @@ module QMK
     end
 
     def keyboards
-      if @keymaps_only
+      if @config[:standalone_keymaps]
         standalone_keyboards
       else
         qmk_keyboards @keymap
@@ -66,7 +70,7 @@ module QMK
         .sort
     end
 
-    def qmk_keyboards(keymap=nil)
+    def qmk_keyboards(keymap = nil)
       Dir["#{keyboards_path}/**/#{keymap}/keymap.c"]
         .map {|path|
           File.dirname(path)
@@ -79,15 +83,19 @@ module QMK
         .sort
     end
 
-    def keyboard_name
-      @keyboard.gsub(/\/rev.*/, '')
-    end
-
     def programmer
       Programmer.new(keyboard_path).flasher
     end
 
     private
+    def get_keyboard(local_keyboard)
+      @config[:keyboards][local_keyboard] || local_keyboard
+    end
+
+    def get_keymap(keyboard)
+      @config[:keymaps][keyboard]
+    end
+
     def in_repo(&block)
       @repo.in_repo &block
     end
@@ -97,12 +105,16 @@ module QMK
         while line = stdout.gets
           puts line
         end
+
+        while line = stderr.gets
+          puts line
+        end
       end
     end
 
     def prepare_firmware
-      keyboard_path = File.expand_path "./#{keyboard_name}"
-      files = Dir.glob "#{keyboard_path}/*"
+      local_keyboard_path = File.expand_path "./#{@keyboard}"
+      files = Dir.glob "#{local_keyboard_path}/*"
 
       FileUtils.mkdir_p keymap_path
       FileUtils.cp_r files, keymap_path
@@ -110,7 +122,8 @@ module QMK
 
     def make_target(target = nil)
       return target unless @keyboard
-      [@keyboard, @keymap, target].compact.join(':')
+
+      [@qmk_keyboard, @keymap, target].compact.join(':')
     end
 
     def keyboards_path
@@ -118,19 +131,23 @@ module QMK
     end
 
     def keyboard_path
-      "#{keyboards_path}/#{keyboard_name}"
+      "#{keyboards_path}/#{@qmk_keyboard}"
     end
 
     def keymap_path
-      if handwired?
-        keyboard_path
-      else
-        "#{keyboard_path}/keymaps/#{@keymap}"
+      if /handwired/ =~ @qmk_keyboard
+        return handwired_keymap_path
       end
+
+      standard_keymap_path
     end
 
-    def handwired?
-      @keyboard =~ /handwired/
+    def standard_keymap_path
+      "#{keyboard_path}/keymaps/#{@keymap}"
+    end
+
+    def handwired_keymap_path
+      keyboard_path
     end
   end
 end
