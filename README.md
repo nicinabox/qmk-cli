@@ -1,6 +1,6 @@
 # qmk-cli
 
-A thin wrapper around QMK's `make` to make common tasks easier. **This is a proof of concept and should be considered unstable.**
+A wrapper around QMK's `make` to make common tasks easier. **This is a proof of concept and should be considered unstable.**
 
 ## Why use this?
 
@@ -30,6 +30,27 @@ A thin wrapper around QMK's `make` to make common tasks easier. **This is a proo
 - Keyboard directories should be at the root with the keymap files inside. Since these are *your* keymaps there's no need to add additional namespacing.
 
 View [nicinabox/keymaps](https://github.com/nicinabox/keymaps) for a complete example on how standalone keymaps should be organized.
+
+### .qmk
+
+This file tells qmk-cli that the directory contains keymaps only, with the directory named after the keyboard it supports. This works well for common cases, but there are a number of cases in which you may want to organize differently and supply a configuration.
+
+Here is an example configuration. All fields are optional.
+
+```yaml
+# Specify your keymap name. Uses `whoami` by default.
+keymap: nic
+
+# Map local keyboard directories to qmk keyboard directories if needed.
+keyboards:
+  bananasplit_blocked: bananasplit
+  clueboard: clueboard/66
+  nh60: handwired/nh60
+
+keymaps:
+  # Override keymap names that differ from your keymap setting above.
+  nh60: default
+```
 
 ## Platforms
 
