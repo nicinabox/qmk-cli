@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "qmk-cli"
-  s.version     = "0.2.0"
+  s.version     = "0.3.0"
   s.date        = "2018-02-27"
   s.summary     = "A cli wrapper for QMK Firmware"
   s.authors     = ["Nic Haynes"]
