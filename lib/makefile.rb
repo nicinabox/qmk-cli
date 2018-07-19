@@ -12,6 +12,10 @@ class Makefile
     value
   end
 
+  def dry_run(command)
+    `make -n -f #{@include_makefile} #{command}`
+  end
+
   private
   def write
     file = Tempfile.new('makefile')

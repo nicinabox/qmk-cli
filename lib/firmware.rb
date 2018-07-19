@@ -84,7 +84,8 @@ module QMK
     end
 
     def programmer
-      Programmer.new(keyboard_path).flasher
+      prog = Programmer.new(@qmk_keyboard, keyboard_path, LIB_PATH)
+      prog.utility
     end
 
     private

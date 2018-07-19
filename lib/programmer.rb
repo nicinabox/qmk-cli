@@ -1,50 +1,40 @@
 require 'makefile'
 
-FLASHERS = {
-  'dfu': ['lufa-dfu', 'qmk-dfu', 'atmel-dfu'],
-  'avrdude': ['caterina', 'usbasploader'],
-  'teensy': 'halfkay',
-}
-
-BOOTLOADERS = {
-  'halfkay': ['512', '1024'],
-  'atmel-dfu': '4096',
-  'usbasploader': '2048',
+UTILITIES = {
+  'dfu': ['BOOTLOADER_DFU', 'BOOTLOADER_LUFA_DFU', 'BOOTLOADER_QMK_DFU'],
+  'avrdude': ['BOOTLOADER_CATERINA'],
+  'teensy': ['BOOTLOADER_HALFKAY'],
 }
 
 class Programmer
-  def initialize(keyboard_path)
+  def initialize(keyboard, keyboard_path, lib_path)
+    @keyboard = keyboard
     @keyboard_path = keyboard_path
+    @lib_path = lib_path
   end
 
-  def bootloader
-    filename = "#{@keyboard_path}/rules.mk"
-    parse_bootloader_name(filename) if File.exists? filename
-  end
+  def utility
+    flasher = nil
 
-  def flasher
-    bootloader and FLASHERS.each do |k, v|
-      break k.to_s if v.include? bootloader.downcase
+    makefile_output.each_line do |line|
+      flasher = find_flashing_utility line
+      break if flasher
     end
+
+    flasher
   end
 
   private
-  def bootloader_from_size(size)
-    size and BOOTLOADERS.each do |k, v|
-      break k.to_s if v.include? size.to_s
+  def find_flashing_utility(line)
+    match = UTILITIES.find do |k, v|
+      v.any? {|val| line.include? val}
     end
+
+    match and match[0].to_s
   end
 
-  def parse_bootloader_name(filename)
-    make = Makefile.new(filename)
-    name = make.get :bootloader
-    return name if name
-
-    size = make.get :bootloader_size
-    return bootloader_from_size(size) if size
-
-    opt_defs = make.get :opt_defs
-    match = opt_defs.match /BOOTLOADER_SIZE=(\w+)/
-    return bootloader_from_size(match[1]) if match
+  def makefile_output
+    make = Makefile.new("#{@lib_path}/Makefile")
+    make.dry_run("#{@keyboard}:default:build")
   end
 end
