@@ -40,7 +40,13 @@ module QMK
     end
 
     def flash
-      @firmware.make @firmware.programmer
+      programmer = @options[:programmer] || @firmware.programmer
+      unless programmer
+        puts "Unable to determine programmer"
+        return
+      end
+
+      @firmware.make programmer
     end
 
     def clean
@@ -61,6 +67,10 @@ module QMK
         options[:keymap] = config[:keymap]
         parser.on("-k", "--keymap KEYMAP", "Your keymap name (default: #{options[:keymap]})") do |v|
           options[:keymap] = v
+        end
+
+        parser.on("-p", "--programmer NAME", "Programmer to use (dfu, teensy, avrdude)") do |v|
+          options[:programmer] = v
         end
 
         parser.on("-v", "--version", "Show qmk-cli version") do
